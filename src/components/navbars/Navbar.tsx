@@ -16,7 +16,7 @@ const poppins = Poppins({
 const Navbar = () => {
   return (
     <>
-      <header className="py-4 px-2 md:px-4 xl:px-32 ">
+      <header className="py-4 px-2 md:px-4 xl:px-16 2xl:px-32 ">
         <nav className="flex items-center justify-between w-full">
           <div className="flex gap-4">
             <Link href={"/"}>
