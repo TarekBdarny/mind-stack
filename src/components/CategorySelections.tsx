@@ -11,12 +11,17 @@ const CategorySelections = () => {
     "Wealth",
     "Money Making",
     "Web Development",
+    "Web Developmen",
+    "Web Developmet",
+    "Web Developmnt",
+    "Web Developent",
+    "Web Develope",
     "Other",
   ];
   return (
-    <ScrollArea className="w-full whitespace-nowrap rounded-md ">
-      <div className="w-full my-6 py-2 px-2 md:px-4 xl:px-16 2xl:px-32 ">
-        <ul className="flex gap-4 lg:gap-7">
+    <ScrollArea className="max-w-7xl py-3 mx-auto whitespace-nowrap rounded-md ">
+      <div className="px-4">
+        <ul className="flex gap-4 lg:gap-5.5">
           {categories.map((category) => (
             <li key={category}>
               <Link href={"#"}>

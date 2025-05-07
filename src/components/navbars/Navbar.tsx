@@ -19,7 +19,7 @@ const Navbar = async () => {
   if (user) registerUserToDB();
   return (
     <>
-      <header className="py-4 px-2 md:px-4 xl:px-16 2xl:px-32 ">
+      <header className="max-w-7xl mx-auto px-4 py-4 ">
         <nav className="flex items-center justify-between w-full">
           <div className="flex gap-4">
             <Link href={"/"}>
