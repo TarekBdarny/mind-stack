@@ -35,26 +35,29 @@ export const NavbarItems = ({ mobile }: { mobile?: boolean }) => {
           </Button>
         </Link>
       )}
-
-      <SignedOut>
-        <Button
-          asChild
-          variant={"outline"}
-          className="text-primary cursor-pointer "
-        >
-          <SignInButton />
-        </Button>
-        <Button
-          asChild
-          variant={"outline"}
-          className="hover:text-primary cursor-pointer"
-        >
-          <SignUpButton />
-        </Button>
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
+      {!mobile && (
+        <>
+          <SignedOut>
+            <Button
+              asChild
+              variant={"outline"}
+              className="text-primary cursor-pointer "
+            >
+              <SignInButton />
+            </Button>
+            <Button
+              asChild
+              variant={"outline"}
+              className="hover:text-primary cursor-pointer"
+            >
+              <SignUpButton />
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </>
+      )}
     </ul>
   );
 };

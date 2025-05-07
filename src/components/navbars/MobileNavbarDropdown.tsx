@@ -1,42 +1,24 @@
 import {
   Bell,
   ChevronsUpDown,
-  ChevronUp,
-  Cloud,
   CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
   LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
   Settings,
   Sparkles,
-  User,
-  User2,
-  UserPlus,
-  Users,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import UserAvatar from "../UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
+import { SignOutButton } from "@clerk/nextjs";
 
 const MobileNavbarDropdown = () => {
   return (
@@ -84,7 +66,7 @@ const MobileNavbarDropdown = () => {
         </DropdownMenuItem>
         <DropdownMenuItem variant="destructive">
           <LogOut />
-          <span>Sign out</span>
+          <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
