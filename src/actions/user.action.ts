@@ -48,3 +48,16 @@ export const getAuthUser = async () => {
     console.log("error in getAthUser", error);
   }
 };
+export const getUserByUsername = async (username: string) => {
+  try {
+    const user = prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+    if (!user) return;
+    return user;
+  } catch (error) {
+    console.log("error in getUserByUsername", error);
+  }
+};

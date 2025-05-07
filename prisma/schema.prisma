@@ -24,4 +24,61 @@ model User{
   location String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  blogs Blog[]
+  comments Comment[]
+  likes Like[]
+  followers Follows[] @relation("following") // users who follow this user
+  following Follows[] @relation("follower") // users this user follows
+
+}
+model Blog{
+  id String @id @default(cuid())
+  authorId String
+  content String?
+  images String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments Comment[]
+  likes Like[]
+
+}
+model Comment{
+  id String @id @default(cuid())
+  content String
+  commenterId String
+  blogId String
+  createdAt DateTime @default(now())
+
+  // relations
+  commenter User @relation(fields: [commenterId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  @@index([commenterId,blogId]) 
+}
+model Like{
+  id String @id @default(cuid())
+  blogId String
+  userId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([userId,blogId]) // composite index for faster queries
+  @@unique([userId,blogId]) // this prevents same user liking blog twice
+}
+
+model Follows{
+  followerId String
+  followingId String
+  createdAt DateTime @default(now())
+
+  // Relations
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@index([followerId,followingId]) // composite index for faster queries
+  @@id([followerId, followingId]) // composite primary key prevents duplicate follows
 }
