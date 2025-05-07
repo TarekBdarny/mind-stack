@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <CategorySelections />
-      <div className="mt-10">
+      <div className="mt-10 grid grid-cols-20">
         <UserSidebar />
         {children}
       </div>
