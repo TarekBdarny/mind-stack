@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getDbUserId } from "./user.action";
-import { redirect } from "next/dist/server/api-utils";
 
 export const createBlog = async (
   content: string | null,
@@ -27,5 +26,54 @@ export const createBlog = async (
     return { success: true, blog: newBlog };
   } catch (error) {
     console.log("error in create blog action", error);
+  }
+};
+export const getAllBlogs = async () => {
+  try {
+    const blogs = await prisma.blog.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+          },
+        },
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+    return blogs;
+  } catch (error) {
+    console.log("Error in getAllBlogs", error);
+    throw new Error("Failed to fetch blogs");
   }
 };

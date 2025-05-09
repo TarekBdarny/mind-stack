@@ -15,12 +15,10 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1023px)" });
-  console.log(isTabletOrMobile);
   React.useEffect(() => {
     setMounted(true);
   }, []);
   if (!mounted) return null;
-  console.log(theme);
   return isTabletOrMobile ? (
     <button
       className="my-1.5"

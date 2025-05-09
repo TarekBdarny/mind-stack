@@ -39,6 +39,7 @@ const Tiptap = () => {
         }),
       ],
       content: data?.trim() ?? "",
+      immediatelyRender: false,
       editorProps: {
         attributes: {
           class: "outline-none leading-relaxed",
