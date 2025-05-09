@@ -4,7 +4,7 @@ import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="">
+    <div>
       <CategorySelections />
       <div className="max-w-7xl mx-auto px-4 mt-3">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -50,12 +50,26 @@ export const getAuthUser = async () => {
 };
 export const getUserByUsername = async (username: string) => {
   try {
-    const user = prisma.user.findUnique({
-      where: {
-        username,
+    const user = await prisma.user.findUnique({
+      where: { username: username },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        bio: true,
+        image: true,
+        location: true,
+        createdAt: true,
+        _count: {
+          select: {
+            followers: true,
+            following: true,
+            blogs: true,
+          },
+        },
       },
     });
-    if (!user) return;
+
     return user;
   } catch (error) {
     console.log("error in getUserByUsername", error);

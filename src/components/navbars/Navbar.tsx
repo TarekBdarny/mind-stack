@@ -18,40 +18,38 @@ const Navbar = async () => {
 
   if (user) registerUserToDB();
   return (
-    <>
-      <header className="max-w-7xl mx-auto px-4 py-4 ">
-        <nav className="flex items-center justify-between w-full">
-          <div className="flex gap-4">
-            <Link href={"/"}>
-              <h1
-                className={`text-2xl font-semibold flex gap-1 ${poppins.className}`}
-              >
-                Mind <p className="text-primary">Stack</p>
-              </h1>
-            </Link>
+    <header className="max-w-7xl mx-auto px-4 py-4 sticky top-0 z-50 bg-background ">
+      <nav className="flex items-center justify-between w-full">
+        <div className="flex gap-4">
+          <Link href={"/"}>
+            <h1
+              className={`text-2xl font-semibold flex gap-1 ${poppins.className}`}
+            >
+              Mind <p className="text-primary">Stack</p>
+            </h1>
+          </Link>
+        </div>
+        <div>
+          <div className="flex items-center relative  ">
+            <Input
+              className="w-[250px] lg:w-[400px] py-2 px-4 outline-none"
+              placeholder="Search For Anything"
+            />
+            <label htmlFor="search-input" className="absolute right-2">
+              <Search />
+              <span className="sr-only">Search</span>
+            </label>
           </div>
-          <div>
-            <div className="flex items-center relative  ">
-              <Input
-                className="w-[250px] lg:w-[400px] py-2 px-4 outline-none"
-                placeholder="Search For Anything"
-              />
-              <label htmlFor="search-input" className="absolute right-2">
-                <Search />
-                <span className="sr-only">Search</span>
-              </label>
-            </div>
-          </div>
-          <div className="hidden lg:block">
-            <NavbarItems />
-          </div>
-          <div className="block lg:hidden">
-            <MobileNavbar />
-          </div>
-        </nav>
-      </header>
+        </div>
+        <div className="hidden lg:block">
+          <NavbarItems />
+        </div>
+        <div className="block lg:hidden">
+          <MobileNavbar />
+        </div>
+      </nav>
       <Separator className="" />
-    </>
+    </header>
   );
 };
 
