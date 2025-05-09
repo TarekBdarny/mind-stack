@@ -18,9 +18,10 @@ const PostBlogButton = () => {
   }, [BlogData]);
 
   const handleClick = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       await createBlog(BlogData);
+
       toast("Blog has been created", {
         description: dateFormat(new Date()),
       });
