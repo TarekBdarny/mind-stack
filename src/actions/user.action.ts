@@ -75,3 +75,30 @@ export const getUserByUsername = async (username: string) => {
     console.log("error in getUserByUsername", error);
   }
 };
+export async function getUserByClerkId(clerkId: string) {
+  return prisma.user.findUnique({
+    where: {
+      clerkId,
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+          following: true,
+          blogs: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getDbUserId() {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return null;
+
+  const user = await getUserByClerkId(clerkId);
+
+  if (!user) throw new Error("User not found");
+
+  return user.id;
+}

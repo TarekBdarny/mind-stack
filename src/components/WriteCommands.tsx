@@ -45,7 +45,6 @@ const Tiptap = () => {
         },
       },
       onUpdate: ({ editor }) => {
-        setData(editor.getText());
         localStorage.setItem("draft", editor.getHTML());
       },
     },

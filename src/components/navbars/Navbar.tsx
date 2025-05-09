@@ -48,7 +48,7 @@ const Navbar = async () => {
           <MobileNavbar />
         </div>
       </nav>
-      <Separator className="" />
+      <Separator className="mt-4" />
     </header>
   );
 };

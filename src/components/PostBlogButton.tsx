@@ -1,25 +1,50 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
+import { createBlog } from "@/actions/blog.action";
+import { toast } from "sonner";
+import { dateFormat } from "@/lib/date";
+import { useRouter } from "next/navigation";
+
 const PostBlogButton = () => {
-  const [BlogData, setBlogData] = useState<string | null>(
-    localStorage.getItem("draft")
-  );
-  const handleClick = (e) => {
-    e.preventDefault();
-    console.log(BlogData?.length);
+  const [BlogData, setBlogData] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+  useEffect(() => {
+    const storedData = localStorage.getItem("draft");
+    setBlogData(storedData);
+  }, [BlogData]);
+
+  const handleClick = async () => {
+    try {
+      setLoading(true);
+      await createBlog(BlogData);
+      toast("Blog has been created", {
+        description: dateFormat(new Date()),
+      });
+      localStorage.setItem("draft", "");
+      setBlogData("");
+      router.push("/");
+    } catch (error) {
+      setLoading(false);
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="sticky top-20 h-screen">
       <Button
         type="submit"
-        className="w-full cursor-pointer hover:-translate-y-1 transition-all duration-300"
+        className="w-full cursor-pointer hover:-translate-y-1 transition-all duration-300 text-xl"
         size={"drop"}
-        onClick={(e) => handleClick(e)}
+        disabled={loading}
+        onClick={handleClick}
       >
-        Post
+        {loading ? "Posting" : "Post"}
       </Button>
     </div>
   );

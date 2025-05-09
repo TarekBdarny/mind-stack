@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/navbars/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
               <Navbar />
               <main className="mt-3">{children}</main>
             </div>
+            <Toaster />
           </ThemeProvider>
         </ClerkProvider>
       </body>

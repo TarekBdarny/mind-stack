@@ -1,22 +1,29 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { getDbUserId } from "./user.action";
+import { redirect } from "next/dist/server/api-utils";
 
-export const createBlog = async (content: string) => {
+export const createBlog = async (
+  content: string | null,
+  images: string = ""
+) => {
   try {
-    const { userId } = await auth();
-    const user = await currentUser();
-    if (!user || !userId) return { success: false, message: "Unauthenticated" };
+    if (!content) return { success: false, message: "No content provided" };
+    console.log(content);
+    const userId = await getDbUserId();
+    if (!userId) return { success: false, message: "Unauthenticated" };
 
     const newBlog = await prisma.blog.create({
       data: {
         content,
         authorId: userId,
+        images,
       },
     });
     revalidatePath("/");
+
     return { success: true, blog: newBlog };
   } catch (error) {
     console.log("error in create blog action", error);
