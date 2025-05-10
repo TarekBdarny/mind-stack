@@ -11,7 +11,7 @@ const UserSidebar = async () => {
   const user = await getAuthUser();
   if (!user) return <UnAuthenticatedSidebar />;
   return (
-    <div className="sticky top-20">
+    <div className="sticky top-25">
       <Card className="bg-background">
         <CardContent className="pt-6">
           <div className="flex flex-col items-center text-center">
@@ -72,7 +72,7 @@ export default UserSidebar;
 
 const UnAuthenticatedSidebar = () => {
   return (
-    <div className="sticky top-20 ">
+    <div className="sticky top-25 ">
       <Card className="bg-background">
         <CardHeader>
           <CardTitle>
