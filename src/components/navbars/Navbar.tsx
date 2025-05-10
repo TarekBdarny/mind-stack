@@ -30,7 +30,7 @@ const Navbar = async () => {
           </Link>
         </div>
         <div>
-          <div className="flex items-center relative  ">
+          <div className="hidden sm:flex items-center relative  ">
             <Input
               className="w-[250px] lg:w-[400px] py-2 px-4 outline-none"
               placeholder="Search For Anything"

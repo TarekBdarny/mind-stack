@@ -60,7 +60,7 @@ const BlogCard = async ({ blog }: { blog: Blog }) => {
         />
       </CardContent>
       <Separator />
-      <CardFooter className="  flex justify-between items-center">
+      <CardFooter className="flex justify-between items-center">
         <p className="text-xs text-muted-foreground">
           {formatRelativeTime(new Date(blog.createdAt))}
         </p>
