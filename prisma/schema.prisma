@@ -37,6 +37,8 @@ model Blog{
   authorId String
   content String?
   images String?
+  title String
+  categories String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

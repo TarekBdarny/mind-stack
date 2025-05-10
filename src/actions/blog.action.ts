@@ -6,6 +6,8 @@ import { getDbUserId } from "./user.action";
 
 export const createBlog = async (
   content: string | null,
+  category: string,
+  title: string = "",
   images: string = ""
 ) => {
   try {
@@ -17,6 +19,8 @@ export const createBlog = async (
     const newBlog = await prisma.blog.create({
       data: {
         content,
+        title: title,
+        categories: category,
         authorId: userId,
         images,
       },
@@ -40,6 +44,7 @@ export const getAllBlogs = async () => {
             id: true,
             name: true,
             username: true,
+            clerkId: true,
             image: true,
           },
         },

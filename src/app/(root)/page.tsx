@@ -16,12 +16,24 @@ const ITEMS_PER_PAGE = 5;
 //   ? U
 //   : never; // Extract Blog type
 
+export const dynamic = "force-dynamic";
+
 export default async function Home({
-  searchParams,
+  searchParams: initialSearchParams, // Renamed prop
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const currentPage = Number(searchParams?.page) || 1;
+  // Speculatively "await" the searchParams prop
+  const searchParams = await Promise.resolve(initialSearchParams);
+
+  // Simplified currentPage derivation for diagnostics
+  let currentPage = 1;
+  if (searchParams && typeof searchParams.page === "string") {
+    const parsedPage = parseInt(searchParams.page, 10);
+    if (!isNaN(parsedPage) && parsedPage > 0) {
+      currentPage = parsedPage;
+    }
+  }
 
   // TODO: Modify getAllBlogs to support pagination
   // For now, we'll fetch all and manually paginate to build the UI.
