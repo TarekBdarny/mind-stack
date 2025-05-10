@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatRelativeTime } from "@/lib/date"; // Changed to use formatRelativeTime
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { Trash } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
+import DeleteButton from "./DeleteButton";
 
 type Blogs = Awaited<ReturnType<typeof getAllBlogs>>;
 type Blog = Blogs[number];
@@ -46,13 +46,7 @@ const BlogCard = async ({ blog }: { blog: Blog }) => {
             </div>
           </div>
           {user?.id === blog.author.clerkId && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="cursor-pointer hover:text-destructive duration-100"
-            >
-              <Trash />
-            </Button>
+            <DeleteButton blogId={blog.id} />
           )}
         </div>
       </CardHeader>

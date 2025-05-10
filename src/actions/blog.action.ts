@@ -82,3 +82,26 @@ export const getAllBlogs = async () => {
     throw new Error("Failed to fetch blogs");
   }
 };
+export const deleteBlog = async (blogId: string) => {
+  try {
+    const userId = await getDbUserId();
+    if (!userId) return { success: false, message: "Unauthenticated" };
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: blogId,
+      },
+    });
+    if (!blog) return { success: false, message: "Blog not found" };
+    if (blog.authorId !== userId)
+      return { success: false, message: "Unauthorized" };
+    await prisma.blog.delete({
+      where: {
+        id: blogId,
+      },
+    });
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.log("Error in deleteBlog", error);
+  }
+};
