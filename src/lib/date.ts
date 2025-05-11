@@ -44,3 +44,12 @@ export function formatRelativeTime(date: Date): string {
     return `${years}y ago`;
   }
 }
+export function formatMemberSince(date: Date | string): string {
+  const d = new Date(date);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+  };
+  const formattedDate = d.toLocaleDateString("en-US", options);
+  return `Member since ${formattedDate}`;
+}

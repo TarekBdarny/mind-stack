@@ -17,7 +17,6 @@ type Blog = Blogs[number];
 const BlogCard = async ({ blog }: { blog: Blog }) => {
   if (!blog || !blog.content) return null;
   const user = await currentUser();
-  console.log(user?.id, blog.author.clerkId);
   const authorName = blog.author.name || blog.author.username;
   const authorUsername = blog.author.username || blog.author.name;
   const authorImage = blog.author.image ?? "/default_image.png";

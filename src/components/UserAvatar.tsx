@@ -1,10 +1,13 @@
+import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 function UserAvatar() {
+  const { user } = useUser();
+
   return (
-    <Avatar>
-      <AvatarImage src="https://github.com/shadcn.png" />
-      <AvatarFallback>CN</AvatarFallback>
+    <Avatar className="">
+      <AvatarImage src={user?.imageUrl || "/default_image.png"} />
+      <AvatarFallback>{user?.username}</AvatarFallback>
     </Avatar>
   );
 }

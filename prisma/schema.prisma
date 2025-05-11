@@ -38,6 +38,7 @@ model Blog{
   content String?
   images String?
   title String
+  saved Boolean @default(false)
   categories String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

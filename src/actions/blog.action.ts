@@ -105,3 +105,56 @@ export const deleteBlog = async (blogId: string) => {
     console.log("Error in deleteBlog", error);
   }
 };
+export const getAllUserBlogs = async (userId: string) => {
+  try {
+    const blogs = await prisma.blog.findMany({
+      where: {
+        authorId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            clerkId: true,
+            image: true,
+          },
+        },
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+    return blogs;
+  } catch (error) {
+    console.log("Error in getAllUserBlogs", error);
+    throw new Error("Failed to fetch blogs");
+  }
+};
