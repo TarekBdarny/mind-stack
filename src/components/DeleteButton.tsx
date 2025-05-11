@@ -45,6 +45,7 @@ const DeleteButton = ({ blogId }: { blogId: string }) => {
           className="hover:text-destructive duration-100 cursor-pointer"
         >
           <Trash />
+          <span className="sr-only">Delete Button</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
