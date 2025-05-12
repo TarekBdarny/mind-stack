@@ -26,6 +26,8 @@ model User{
   updatedAt DateTime @updatedAt
 
   blogs Blog[]
+  saved Saved[]
+
   comments Comment[]
   likes Like[]
   followers Follows[] @relation("following") // users who follow this user
@@ -38,7 +40,6 @@ model Blog{
   content String?
   images String?
   title String
-  saved Boolean @default(false)
   categories String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,6 +47,7 @@ model Blog{
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments Comment[]
   likes Like[]
+  saved Saved[]
 
 }
 model Comment{
@@ -71,6 +73,18 @@ model Like{
 
   @@index([userId,blogId]) // composite index for faster queries
   @@unique([userId,blogId]) // this prevents same user liking blog twice
+}
+model Saved{
+  id String @id @default(cuid())
+  blogId String
+  userId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([userId,blogId]) // composite index for faster queries
+  @@unique([userId,blogId]) // this prevents same user saving blog twice
 }
 
 model Follows{

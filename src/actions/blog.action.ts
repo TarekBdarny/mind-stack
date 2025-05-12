@@ -63,11 +63,18 @@ export const getAllBlogs = async () => {
             createdAt: "asc",
           },
         },
+        saved: {
+          select: {
+            blogId: true,
+            userId: true,
+          },
+        },
         likes: {
           select: {
             userId: true,
           },
         },
+
         _count: {
           select: {
             likes: true,
@@ -137,6 +144,12 @@ export const getAllUserBlogs = async (userId: string) => {
           },
           orderBy: {
             createdAt: "asc",
+          },
+        },
+        saved: {
+          select: {
+            blogId: true,
+            userId: true,
           },
         },
         likes: {
@@ -253,5 +266,53 @@ export const getAllComments = async (blogId: string) => {
   } catch (error) {
     console.log("Error in getAllComments", error);
     return { success: false, message: "Failed to fetch comments" };
+  }
+};
+export const toggleSave = async (blogId: string) => {
+  try {
+    const userId = await getDbUserId();
+    if (!userId) return { success: false, message: "Unauthenticated" };
+
+    const existingSave = await prisma.saved.findUnique({
+      where: {
+        userId_blogId: {
+          userId,
+          blogId,
+        },
+      },
+    });
+
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: blogId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+    if (!blog) return { success: false, message: "Blog not found" };
+
+    if (existingSave) {
+      await prisma.saved.delete({
+        where: {
+          userId_blogId: {
+            userId,
+            blogId,
+          },
+        },
+      });
+    } else {
+      await prisma.saved.create({
+        data: {
+          userId,
+          blogId,
+        },
+      });
+    }
+    revalidatePath("/");
+    return { success: true, message: "Saved toggled" };
+  } catch (error) {
+    console.log("Error in toggleSave", error);
+    return { success: false, message: "Failed to toggle Save" };
   }
 };
