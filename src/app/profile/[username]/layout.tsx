@@ -11,7 +11,6 @@ type LayoutProps = {
 };
 const Layout = async ({ children, params }: LayoutProps) => {
   const { username } = await params;
-  console.log(username);
   //   const dbUserId = await getDbUserId();
   const user = await getUserByUsername(username);
   if (!user) notFound();

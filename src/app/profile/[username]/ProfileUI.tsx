@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Pen } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { UserProps } from "./page";
 import { getAuthUser } from "@/actions/user.action";
+import { UserDialog } from "@/components/EditUserDialog";
 
 const ProfileUI = async ({ user }: UserProps) => {
   const authUser = await getAuthUser();
@@ -39,10 +38,7 @@ const ProfileUI = async ({ user }: UserProps) => {
           </div>
           {isOwnProfile && (
             <div className=" mt-4">
-              <Button>
-                <Pen />
-                Edit profile
-              </Button>
+              <UserDialog user={user} />
             </div>
           )}
         </div>

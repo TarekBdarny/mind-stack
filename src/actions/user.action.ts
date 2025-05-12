@@ -2,6 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+
+type userData = {
+  bio?: string;
+  location?: string;
+};
 
 export const registerUserToDB = async () => {
   try {
@@ -75,7 +81,7 @@ export const getUserByUsername = async (username: string) => {
     console.log("error in getUserByUsername", error);
   }
 };
-export async function getUserByClerkId(clerkId: string) {
+export const getUserByClerkId = async (clerkId: string) => {
   return prisma.user.findUnique({
     where: {
       clerkId,
@@ -90,9 +96,9 @@ export async function getUserByClerkId(clerkId: string) {
       },
     },
   });
-}
+};
 
-export async function getDbUserId() {
+export const getDbUserId = async () => {
   const { userId: clerkId } = await auth();
   if (!clerkId) return null;
 
@@ -101,4 +107,29 @@ export async function getDbUserId() {
   if (!user) throw new Error("User not found");
 
   return user.id;
-}
+};
+
+export const updateUser = async (data: userData) => {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return null;
+
+    const user = await getUserByClerkId(clerkId);
+
+    if (!user) throw new Error("User not found");
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        ...data,
+      },
+    });
+    revalidatePath(`/profile/${user.username}`);
+    return { success: true, updatedUser };
+  } catch (error) {
+    console.log("error in updateUser", error);
+    throw new Error("Error updating user");
+  }
+};
