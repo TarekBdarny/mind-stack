@@ -1,6 +1,11 @@
 "use client";
 
-import { createComment, getAllBlogs, toggleLike } from "@/actions/blog.action";
+import {
+  createComment,
+  getAllBlogs,
+  toggleLike,
+  toggleSave,
+} from "@/actions/blog.action";
 import React, { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import Link from "next/link";
@@ -28,6 +33,10 @@ const BlogCard = ({
   const { user } = useUser();
   const [newComment, setNewComment] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(
+    blog.saved.some((save) => save.userId === dbUserId)
+  );
   const [isLiking, setIsLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(
     blog.likes.some((like) => like.userId === dbUserId)
@@ -42,7 +51,6 @@ const BlogCard = ({
   const authorImage = blog.author.image ?? "/default_image.png";
   // Assuming blog.id exists for the "Read More" link
   const blogLink = `/blog/${blog.id}`; // You might need to adjust this path
-  console.log(blog.likes.some((like) => like.userId === dbUserId));
   const handleLike = async () => {
     if (isLiking || !user) return;
     try {
@@ -81,7 +89,21 @@ const BlogCard = ({
       setIsCommenting(false);
     }
   };
-
+  const handleSave = async () => {
+    if (isSaving) return;
+    try {
+      setIsSaving(true);
+      const res = await toggleSave(blog.id);
+      if (res.success) {
+        setIsSaved((prev) => !prev);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to save blog");
+    } finally {
+      setIsSaving(false);
+    }
+  };
   return (
     <Card className="w-full flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
       <CardHeader className="px-2 sm:px-4">
@@ -161,8 +183,13 @@ const BlogCard = ({
               <span className="text-sm">{blog._count.comments}</span>
             </Button>
             <ProtectedButton user={user !== null}>
-              <Button variant={"ghost"} className="cursor-pointer">
-                <Bookmark />
+              <Button
+                variant={"ghost"}
+                disabled={isSaving}
+                onClick={handleSave}
+                className="cursor-pointer"
+              >
+                {isSaved ? <Bookmark className="fill-primary" /> : <Bookmark />}
               </Button>
             </ProtectedButton>
           </div>
@@ -234,7 +261,6 @@ const BlogCard = ({
             <CommentBox
               content={newComment}
               isCommenting={isCommenting}
-              blog={blog}
               handleComment={handleComment}
               setNewComment={setNewComment}
             />
