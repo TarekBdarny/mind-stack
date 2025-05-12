@@ -1,10 +1,8 @@
-import { getDbUserId, getUserByUsername } from "@/actions/user.action";
+import { getUserByUsername } from "@/actions/user.action";
 import { notFound } from "next/navigation";
 import React from "react";
 import ProfileUI from "./ProfileUI";
 import ProfilePageSidebar from "@/components/ProfilePageSidebar";
-import Link from "next/link";
-import { activeLinks } from "@/lib/constans";
 import ActiveLinks from "@/components/ActiveLinks";
 
 type LayoutProps = {
@@ -12,7 +10,7 @@ type LayoutProps = {
   params: Promise<{ link: string; username: string }>;
 };
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { username, link } = await params;
+  const { username } = await params;
   console.log(username);
   //   const dbUserId = await getDbUserId();
   const user = await getUserByUsername(username);
