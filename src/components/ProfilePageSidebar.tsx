@@ -6,7 +6,7 @@ import { Separator } from "./ui/separator";
 
 const ProfilePageSidebar = ({ user }: UserProps) => {
   return (
-    <div className="w-full sm:w-[300px] border rounded-md h-fit  px-6 py-8 flex flex-col gap-6 ">
+    <div className="w-full sm:w-[300px] sm:flex-shrink-0 border rounded-md h-fit  px-6 py-8 flex flex-col gap-6 ">
       <p className="text-lg">
         About
         <span className="text-primary"> {user.name}</span>

@@ -1,30 +1,89 @@
-import { getAllBlogs } from "@/actions/blog.action";
-import React from "react";
+"use client";
+
+import { createComment, getAllBlogs, toggleLike } from "@/actions/blog.action";
+import React, { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { formatRelativeTime } from "@/lib/date"; // Changed to use formatRelativeTime
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { currentUser, User } from "@clerk/nextjs/server";
 import DeleteButton from "./DeleteButton";
 import { Bookmark, Edit, Heart, MessageCircleCodeIcon } from "lucide-react";
-import { SignInButton } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import CommentBox from "./CommentBox";
+import { toast } from "sonner";
+import { ScrollArea } from "./ui/scroll-area";
 
 type Blogs = Awaited<ReturnType<typeof getAllBlogs>>;
 type Blog = Blogs[number];
 
-const BlogCard = async ({ blog }: { blog: Blog }) => {
+const BlogCard = ({
+  blog,
+  dbUserId,
+}: {
+  blog: Blog;
+  dbUserId: string | null;
+}) => {
+  const { user } = useUser();
+  const [newComment, setNewComment] = useState("");
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const [hasLiked, setHasLiked] = useState(
+    blog.likes.some((like) => like.userId === dbUserId)
+  );
+  const [optimisticLikes, setOptmisticLikes] = useState(blog._count.likes);
+  const [showComments, setShowComments] = useState(false);
+
   if (!blog || !blog.content) return null;
-  const user = await currentUser();
+
   const authorName = blog.author.name || blog.author.username;
   const authorUsername = blog.author.username || blog.author.name;
   const authorImage = blog.author.image ?? "/default_image.png";
   // Assuming blog.id exists for the "Read More" link
   const blogLink = `/blog/${blog.id}`; // You might need to adjust this path
+  console.log(blog.likes.some((like) => like.userId === dbUserId));
+  const handleLike = async () => {
+    if (isLiking || !user) return;
+    try {
+      setIsLiking(true);
+      setHasLiked(!hasLiked);
+      setOptmisticLikes((prev) => (hasLiked ? prev - 1 : prev + 1));
+      await toggleLike(blog.id);
+    } catch (error) {
+      console.log(error);
+      setOptmisticLikes(blog._count.likes);
+      setHasLiked(blog.likes.some((like) => like.userId === dbUserId));
+    } finally {
+      setIsLiking(false);
+    }
+  };
+  const handleComment = async () => {
+    if (isCommenting) return;
+    try {
+      setIsCommenting(true);
+      if (newComment.trim() === "") {
+        toast.error("Please write a comment");
+        return;
+      }
+      const res = await createComment(blog.id, newComment);
+      if (!res.success) {
+        toast.error("Failed to create comment");
+        return;
+      }
+      setNewComment("");
+      toast.success("Comment created successfully");
+      setIsCommenting(false);
+    } catch (error) {
+      toast.error("Failed to create comment");
+      console.log("Error in handleComment", error);
+    } finally {
+      setIsCommenting(false);
+    }
+  };
 
   return (
-    <Card className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
+    <Card className="w-full flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
       <CardHeader className="px-2 sm:px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -65,10 +124,10 @@ const BlogCard = async ({ blog }: { blog: Blog }) => {
       </CardHeader>
       <CardContent className="px-4 sm:px-6">
         <Link href={blogLink} passHref>
-          <h1 className="mb-5 line-clamp-1">{blog.title}</h1>
+          <h1 className="mb-5 line-clamp-1 break-words">{blog.title}</h1>
         </Link>
         <div
-          className="prose dark:prose-invert max-w-none line-clamp-3 "
+          className="prose dark:prose-invert line-clamp-3 "
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
       </CardContent>
@@ -77,40 +136,35 @@ const BlogCard = async ({ blog }: { blog: Blog }) => {
       <CardFooter>
         <div className="flex items-center justify-between w-full">
           <div>
-            {user ? (
-              <>
-                <Button variant={"ghost"} className="cursor-pointer">
-                  <Heart />
-                  <span className="text-sm">10</span>
-                </Button>
-                <Button variant={"ghost"} className="cursor-pointer">
-                  <MessageCircleCodeIcon />
-                  <span className="text-sm">5</span>
-                </Button>
-
-                <Button variant={"ghost"} className="cursor-pointer">
-                  <Bookmark />
-                </Button>
-              </>
-            ) : (
-              <>
-                <SignInButton mode="modal">
-                  <Button variant={"ghost"} className="cursor-pointer">
-                    <Heart />
-                    <span className="text-sm">10</span>
-                  </Button>
-                </SignInButton>
-                <Button variant={"ghost"} className="cursor-pointer">
-                  <MessageCircleCodeIcon />
-                  <span className="text-sm">5</span>
-                </Button>
-                <SignInButton mode="modal">
-                  <Button variant={"ghost"} className="cursor-pointer">
-                    <Bookmark />
-                  </Button>
-                </SignInButton>
-              </>
-            )}
+            <ProtectedButton user={user !== null}>
+              <Button
+                variant={"ghost"}
+                className="cursor-pointer"
+                onClick={handleLike}
+              >
+                <Heart
+                  className={`${hasLiked ? "fill-red-400" : "fill-background"}`}
+                />
+                <span className="text-sm">{optimisticLikes}</span>
+              </Button>
+            </ProtectedButton>
+            <Button
+              variant={"ghost"}
+              className="cursor-pointer"
+              onClick={() => setShowComments((prev) => !prev)}
+            >
+              {showComments ? (
+                <MessageCircleCodeIcon className="fill-indigo-400" />
+              ) : (
+                <MessageCircleCodeIcon />
+              )}
+              <span className="text-sm">{blog._count.comments}</span>
+            </Button>
+            <ProtectedButton user={user !== null}>
+              <Button variant={"ghost"} className="cursor-pointer">
+                <Bookmark />
+              </Button>
+            </ProtectedButton>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">
@@ -119,6 +173,74 @@ const BlogCard = async ({ blog }: { blog: Blog }) => {
           </div>
         </div>
       </CardFooter>
+      {showComments && (
+        <div className="flex w-full flex-col justify-between px-4 sm:px-6  gap-4">
+          {/* ALL COMMENTS */}
+          <div>
+            {blog._count.comments === 0 ? (
+              <p>No Comments yet.</p>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <ScrollArea className="h-56 w-full">
+                  {blog.comments.map((comment, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2">
+                          <Link
+                            href={`/profile/${comment.commenter.username}`}
+                            passHref
+                          >
+                            <Avatar className="size-10 sm:size-12 border-2 border-transparent hover:border-primary transition-colors">
+                              <AvatarImage
+                                src={
+                                  comment.commenter.image || "default_image.png"
+                                }
+                                alt={comment.commenter.username}
+                              />
+                              <AvatarFallback>
+                                {comment.commenter.username
+                                  .charAt(0)
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          </Link>
+                          <div className="flex space-x-2 items-center">
+                            <p className="font-medium">
+                              {comment.commenter.name}
+                            </p>
+                            <span className="text-sm text-muted-foreground">
+                              @{comment.commenter.username}
+                            </span>
+                            <p className="text-xs text-muted-foreground">
+                              {formatRelativeTime(new Date(comment.createdAt))}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 px-2">
+                        <p className="break-words">{comment.content}</p>
+                      </div>
+                      <div className=" not-last:text-red-400">
+                        <Separator className="my-4" />
+                      </div>
+                    </div>
+                  ))}
+                </ScrollArea>
+              </div>
+            )}
+          </div>
+          {/* WRITE A COMMENT */}
+          <div className="w-full">
+            <CommentBox
+              content={newComment}
+              isCommenting={isCommenting}
+              blog={blog}
+              handleComment={handleComment}
+              setNewComment={setNewComment}
+            />
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
@@ -141,18 +263,16 @@ export default BlogCard;
         </Link>
       </CardFooter> */
 }
-const ProtectActionButton = ({
+const ProtectedButton = ({
   children,
   user,
 }: {
   children: React.ReactNode;
-  user: User;
+  user: boolean; // Replace with the correct type for your user object
 }) => {
-  return !user ? (
-    <SignInButton mode="modal">{children}</SignInButton>
+  return user ? (
+    <>{children}</>
   ) : (
-    {
-      children,
-    }
+    <SignInButton mode="modal">{children}</SignInButton>
   );
 };

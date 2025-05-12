@@ -1,10 +1,9 @@
 import { getAllUserBlogs } from "@/actions/blog.action";
-import { getUserByUsername } from "@/actions/user.action";
+import { getDbUserId, getUserByUsername } from "@/actions/user.action";
 import BlogCard from "@/components/BlogCard";
 import { notFound } from "next/navigation";
 import React from "react";
 import ProfileUI from "./ProfileUI";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ProfilePageSidebar from "@/components/ProfilePageSidebar";
 
 export type UserProps = {
@@ -24,14 +23,9 @@ export type UserProps = {
   };
 };
 
-const page = async ({
-  params,
-}: {
-  params: {
-    username: string;
-  };
-}) => {
-  const { username } = params;
+const page = async ({ params }: { params: Promise<{ username: string }> }) => {
+  const { username } = await params;
+  const dbUserId = await getDbUserId();
   const user = await getUserByUsername(username);
   if (!user) notFound();
   const userBlogs = await getAllUserBlogs(user.id);
@@ -45,17 +39,10 @@ const page = async ({
       <div className="flex flex-col sm:flex-row gap-3 px-4 sm:px-6">
         {/* SEP */}
         <ProfilePageSidebar user={user} />
-
-        <div className="flex-1">
-          <ScrollArea>
-            <div className="">
-              <div className="flex flex-col gap-4">
-                {userBlogs.map((blog, i) => (
-                  <BlogCard key={i} blog={blog} />
-                ))}
-              </div>
-            </div>
-          </ScrollArea>
+        <div className="flex flex-col gap-4 w-full overflow-x-hidden">
+          {userBlogs.map((blog, i) => (
+            <BlogCard key={i} blog={blog} dbUserId={dbUserId} />
+          ))}
         </div>
       </div>
     </div>

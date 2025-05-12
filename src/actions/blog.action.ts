@@ -158,3 +158,100 @@ export const getAllUserBlogs = async (userId: string) => {
     throw new Error("Failed to fetch blogs");
   }
 };
+export const toggleLike = async (blogId: string) => {
+  try {
+    const userId = await getDbUserId();
+    if (!userId) return { success: false, message: "Unauthenticated" };
+
+    const existingLike = await prisma.like.findUnique({
+      where: {
+        userId_blogId: {
+          userId,
+          blogId,
+        },
+      },
+    });
+
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: blogId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+    if (!blog) return { success: false, message: "Blog not found" };
+
+    if (existingLike) {
+      await prisma.like.delete({
+        where: {
+          userId_blogId: {
+            userId,
+            blogId,
+          },
+        },
+      });
+    } else {
+      await prisma.like.create({
+        data: {
+          userId,
+          blogId,
+        },
+      });
+    }
+    revalidatePath("/");
+    return { success: true, message: "Like toggled" };
+  } catch (error) {
+    console.log("Error in toggleLike", error);
+    return { success: false, message: "Failed to toggle like" };
+  }
+};
+export const createComment = async (blogId: string, content: string) => {
+  try {
+    const userId = await getDbUserId();
+    if (!userId) return { success: false, message: "Unauthenticated" };
+    if (!content) return { success: false, message: "No content provided" };
+
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: blogId,
+      },
+    });
+    if (!blog) return { success: false, message: "Blog not found" };
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        blogId,
+        commenterId: userId,
+      },
+    });
+    revalidatePath(`/blog/${blogId}`);
+    return { success: true, comment };
+  } catch (error) {
+    console.log("Error in createComment", error);
+    return { success: false, message: "Failed to create comment" };
+  }
+};
+export const getAllComments = async (blogId: string) => {
+  try {
+    const comments = await prisma.comment.findMany({
+      where: {
+        blogId,
+      },
+      include: {
+        commenter: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+    });
+    return comments;
+  } catch (error) {
+    console.log("Error in getAllComments", error);
+    return { success: false, message: "Failed to fetch comments" };
+  }
+};

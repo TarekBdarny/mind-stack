@@ -1,4 +1,5 @@
 import { getAllBlogs } from "@/actions/blog.action";
+import { getDbUserId } from "@/actions/user.action";
 import BlogCard from "@/components/BlogCard";
 import {
   Pagination,
@@ -25,7 +26,7 @@ export default async function Home({
 }) {
   // Speculatively "await" the searchParams prop
   const searchParams = await Promise.resolve(initialSearchParams);
-
+  const dbUserId = await getDbUserId();
   // Simplified currentPage derivation for diagnostics
   let currentPage = 1;
   if (searchParams && typeof searchParams.page === "string") {
@@ -81,7 +82,7 @@ export default async function Home({
         <div className="grid grid-cols-1  sm:grid-cols-1 gap-6 mb-8">
           {/* Changed lg:grid-cols-1 to display one card per row for a cleaner look with new card design */}
           {paginatedBlogs.map((blog) => (
-            <BlogCard key={blog.id} blog={blog} />
+            <BlogCard key={blog.id} blog={blog} dbUserId={dbUserId} />
           ))}
         </div>
       )}
