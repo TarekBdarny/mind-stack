@@ -316,3 +316,59 @@ export const toggleSave = async (blogId: string) => {
     return { success: false, message: "Failed to toggle Save" };
   }
 };
+export const getBlogById = async (blogId: string) => {
+  try {
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: blogId,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            clerkId: true,
+            image: true,
+          },
+        },
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        saved: {
+          select: {
+            blogId: true,
+            userId: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+    if (!blog) return;
+    return blog;
+  } catch (error) {
+    console.log("Error in getBlogById", error);
+  }
+};

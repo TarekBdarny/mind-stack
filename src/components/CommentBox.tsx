@@ -8,6 +8,7 @@ import { LogIn, Send } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
 import { getAuthUser } from "@/actions/user.action";
 import { Skeleton } from "./ui/skeleton";
+import { Textarea } from "./ui/textarea";
 
 type User = Awaited<ReturnType<typeof getAuthUser>>;
 
@@ -16,12 +17,14 @@ type CommentProps = {
   handleComment: () => Promise<void>;
   setNewComment: Dispatch<SetStateAction<string>>;
   isCommenting: boolean;
+  use?: string | "group";
 };
 
 const CommentBox = ({
   content,
   setNewComment,
   handleComment,
+  use,
   isCommenting,
 }: CommentProps) => {
   const [authUser, setAuthUser] = useState<User | null>(null);
@@ -40,7 +43,7 @@ const CommentBox = ({
   if (loading) return <CommentBoxSkeleton />;
   return (
     <>
-      {authUser && !loading ? (
+      {use === "group" && authUser && !loading ? (
         <div className="flex items-center">
           <Link href={`/profile/${authUser?.username}`} passHref>
             <Avatar className="size-10 sm:size-12 border-2 border-transparent hover:border-primary transition-colors">
@@ -68,6 +71,47 @@ const CommentBox = ({
             >
               {!isCommenting ? "Comment" : "Posting..."}
               <Send />
+            </Button>
+          </div>
+        </div>
+      ) : use === "separate" && authUser ? (
+        <div className="flex flex-col gap-5">
+          <div className="flex w-full gap-3 items-center">
+            <Link href={`/profile/${authUser?.username}/blogs`} passHref>
+              <Avatar className="size-10 sm:size-12 border-2 border-transparent hover:border-primary transition-colors">
+                <AvatarImage
+                  src={authUser?.image || "default_image.png"}
+                  alt={"User Avatar"}
+                />
+                <AvatarFallback>
+                  {authUser?.username.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+            <Link
+              href={`/profile/${authUser?.username}/blogs`}
+              className="text-lg hover:underline"
+            >
+              {authUser.name}
+            </Link>
+          </div>
+          <div className="relative ">
+            <Textarea
+              value={content}
+              className="w-full h-52 resize-none "
+              maxLength={100}
+              disabled={isCommenting}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder={`What is in you mind ${authUser.name} !`}
+            />
+            <Button
+              className="absolute right-4 bottom-2 hover:text-primary cursor-pointer hover:-translate-y-1"
+              variant={"outline"}
+              disabled={isCommenting}
+              onClick={handleComment}
+            >
+              <Send />
+              {isCommenting ? "Posting ... " : "Comment"}
             </Button>
           </div>
         </div>

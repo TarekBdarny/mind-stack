@@ -14,13 +14,25 @@ import MobileNavbarDropdown from "./MobileNavbarDropdown";
 import { useMediaQuery } from "react-responsive";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { getAuthUser } from "@/actions/user.action";
 
+export type User = Awaited<ReturnType<typeof getAuthUser>>;
 const MobileNavbar = () => {
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   useEffect(() => {
     setMounted(true);
+    const getUser = async () => {
+      try {
+        const res = await getAuthUser();
+        setUser(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
   }, []);
 
   if (!mounted || !isTabletOrMobile) return null;
@@ -53,7 +65,7 @@ const MobileNavbar = () => {
               </div>
             </SignedOut>
             <SignedIn>
-              <MobileNavbarDropdown />
+              <MobileNavbarDropdown user={user} />
             </SignedIn>
           </SheetFooter>
         </SheetContent>

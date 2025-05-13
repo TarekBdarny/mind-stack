@@ -10,26 +10,36 @@ import React, { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { formatRelativeTime } from "@/lib/date"; // Changed to use formatRelativeTime
+import { formatRelativeTime, getFormattedBlogDate } from "@/lib/date"; // Changed to use formatRelativeTime
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import DeleteButton from "./DeleteButton";
-import { Bookmark, Edit, Heart, MessageCircleCodeIcon } from "lucide-react";
+import {
+  Bookmark,
+  Edit,
+  Heart,
+  MessageCircleCodeIcon,
+  MoreHorizontal,
+} from "lucide-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import CommentBox from "./CommentBox";
 import { toast } from "sonner";
 import { ScrollArea } from "./ui/scroll-area";
+import { Badge } from "./ui/badge";
+
+import Comment from "./Comment";
+import CommentsSheet from "./CommentsSheet";
 
 type Blogs = Awaited<ReturnType<typeof getAllBlogs>>;
-type Blog = Blogs[number];
+export type Blog = Blogs[number];
 
-const BlogCard = ({
-  blog,
-  dbUserId,
-}: {
+type BlogProps = {
   blog: Blog;
   dbUserId: string | null;
-}) => {
+  use?: string | "group";
+};
+
+const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
   const { user } = useUser();
   const [newComment, setNewComment] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
@@ -68,6 +78,7 @@ const BlogCard = ({
   };
   const handleComment = async () => {
     if (isCommenting) return;
+
     try {
       setIsCommenting(true);
       if (newComment.trim() === "") {
@@ -104,6 +115,66 @@ const BlogCard = ({
       setIsSaving(false);
     }
   };
+  if (use === "separate")
+    return (
+      <SeparateBlog blog={blog}>
+        <div className="flex items-center justify-between max-w-7xl">
+          <div className="">
+            <ProtectedButton user={user !== null}>
+              <Button
+                variant={"ghost"}
+                className="cursor-pointer"
+                onClick={handleLike}
+              >
+                <Heart
+                  className={`${hasLiked ? "fill-red-400" : "fill-background"}`}
+                />
+                <span className="text-sm">{optimisticLikes}</span>
+              </Button>
+            </ProtectedButton>
+            <Button
+              variant={"ghost"}
+              className="cursor-pointer"
+              onClick={() => setShowComments((prev) => !prev)}
+            >
+              {showComments ? (
+                <MessageCircleCodeIcon className="fill-indigo-400" />
+              ) : (
+                <MessageCircleCodeIcon />
+              )}
+              <span className="text-sm">{blog._count.comments}</span>
+            </Button>
+            <ProtectedButton user={user !== null}>
+              <Button
+                variant={"ghost"}
+                disabled={isSaving}
+                onClick={handleSave}
+                className="cursor-pointer"
+              >
+                {isSaved ? <Bookmark className="fill-primary" /> : <Bookmark />}
+              </Button>
+            </ProtectedButton>
+          </div>
+          <div>
+            <Button variant={"ghost"} className="cursor-pointer">
+              <MoreHorizontal />
+              <span className="sr-only">More options</span>
+            </Button>
+          </div>
+        </div>
+
+        <Separator />
+        <CommentsSheet
+          showComments={showComments}
+          setShowComments={setShowComments}
+          newComment={newComment}
+          handleComment={handleComment}
+          isCommenting={isCommenting}
+          setNewComment={setNewComment}
+          blog={blog}
+        />
+      </SeparateBlog>
+    );
   return (
     <Card className="w-full flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
       <CardHeader className="px-2 sm:px-4">
@@ -210,47 +281,12 @@ const BlogCard = ({
               <div className="flex flex-col gap-4">
                 <ScrollArea className="h-56 w-full">
                   {blog.comments.map((comment, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-2">
-                          <Link
-                            href={`/profile/${comment.commenter.username}`}
-                            passHref
-                          >
-                            <Avatar className="size-10 sm:size-12 border-2 border-transparent hover:border-primary transition-colors">
-                              <AvatarImage
-                                src={
-                                  comment.commenter.image || "default_image.png"
-                                }
-                                alt={comment.commenter.username}
-                              />
-                              <AvatarFallback>
-                                {comment.commenter.username
-                                  .charAt(0)
-                                  .toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                          </Link>
-                          <div className="flex space-x-2 items-center">
-                            <p className="font-medium">
-                              {comment.commenter.name}
-                            </p>
-                            <span className="text-sm text-muted-foreground">
-                              @{comment.commenter.username}
-                            </span>
-                            <p className="text-xs text-muted-foreground">
-                              {formatRelativeTime(new Date(comment.createdAt))}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-4 px-2">
-                        <p className="break-words">{comment.content}</p>
-                      </div>
-                      <div className=" not-last:text-red-400">
-                        <Separator className="my-4" />
-                      </div>
-                    </div>
+                    <Comment
+                      key={index}
+                      commenter={comment.commenter}
+                      content={comment.content}
+                      createdAt={comment.createdAt}
+                    />
                   ))}
                 </ScrollArea>
               </div>
@@ -259,6 +295,7 @@ const BlogCard = ({
           {/* WRITE A COMMENT */}
           <div className="w-full">
             <CommentBox
+              use={use}
               content={newComment}
               isCommenting={isCommenting}
               handleComment={handleComment}
@@ -300,5 +337,63 @@ const ProtectedButton = ({
     <>{children}</>
   ) : (
     <SignInButton mode="modal">{children}</SignInButton>
+  );
+};
+
+const SeparateBlog = ({
+  blog,
+  children,
+}: {
+  blog: Blog;
+  children: React.ReactNode;
+}) => {
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-10">
+      <div className="flex flex-col gap-4 sm:*:ml-20">
+        <div className="flex gap-4">
+          <Badge variant={"outline"} className=" w-24 p-2">
+            {blog?.categories}
+          </Badge>
+
+          <Badge variant={"outline"} className=" w-24 p-2">
+            New
+          </Badge>
+        </div>
+        {/* TItle and user info */}
+        <div className="w-full">
+          <h1 className=" break-words mt-2 mb-5 pr-10 ">{blog?.title}</h1>
+          <div className="flex items-center gap-4 mb-4 ">
+            <Avatar>
+              <AvatarImage src={blog?.author.image || "/default_image.png"} />
+              <AvatarFallback>
+                {blog?.author.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <Link href={`/profile/${blog?.author.username}/blogs`}>
+              <p className="hover:underline">{blog?.author.name}</p>
+            </Link>
+            <Button
+              className="cursor-pointer rounded-full"
+              variant={"outline"}
+              size={"lg"}
+            >
+              Follow
+            </Button>
+            <p className="text-muted-foreground">
+              {getFormattedBlogDate(blog?.createdAt)}
+            </p>
+          </div>
+          <Separator />
+          {/* Likes Comment save section */}
+        </div>
+        {children}
+        <div
+          className="prose dark:prose-invert break-words mt-5"
+          dangerouslySetInnerHTML={{
+            __html: blog.content || <h1>NO CONTENT</h1>,
+          }}
+        />
+      </div>
+    </section>
   );
 };

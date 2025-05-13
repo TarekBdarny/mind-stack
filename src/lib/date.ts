@@ -53,3 +53,10 @@ export function formatMemberSince(date: Date | string): string {
   const formattedDate = d.toLocaleDateString("en-US", options);
   return `Member since ${formattedDate}`;
 }
+export const getFormattedBlogDate = (date: Date = new Date()): string => {
+  return date.toLocaleDateString("en-US", {
+    month: "short", // 'Apr'
+    day: "numeric", // '9'
+    year: "numeric", // '2025'
+  });
+};

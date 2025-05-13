@@ -19,16 +19,17 @@ import {
 import UserAvatar from "../UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { SignOutButton } from "@clerk/nextjs";
+import { User } from "./MobileNavbar";
 
-const MobileNavbarDropdown = () => {
+const MobileNavbarDropdown = ({ user }: { user: User }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="p-4" variant={"outline"} size={"drop"}>
           <UserAvatar />
           <div className="flex flex-col items-start ml-2">
-            <p>Tarek Devel</p>
-            <p className="text-muted-foreground">example@gmail.com</p>
+            <p>{user?.name}</p>
+            <p className="text-muted-foreground">{user?.email}</p>
           </div>
           <ChevronsUpDown className="ml-auto" />
         </Button>
@@ -37,8 +38,8 @@ const MobileNavbarDropdown = () => {
         <DropdownMenuLabel className="flex">
           <UserAvatar />
           <div className="flex flex-col items-start ml-2">
-            <p>Tarek Devel</p>
-            <p className="text-muted-foreground">example@gmail.com</p>
+            <p>{user?.name}</p>
+            <p className="text-muted-foreground">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
