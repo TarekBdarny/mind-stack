@@ -11,8 +11,10 @@ import {
 import { Compass } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
+import { getMostCommonCategories } from "@/actions/blog.action";
 
-const Dropdown = () => {
+export type Categories = Awaited<ReturnType<typeof getMostCommonCategories>>;
+const Dropdown = ({ categories }: { categories: Categories }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,21 +27,13 @@ const Dropdown = () => {
         <DropdownMenuLabel>Popular Topics</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={"#"}>
-            <DropdownMenuItem>
-              <Badge variant={"outline"}>Programming</Badge>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={"#"}>
-            <DropdownMenuItem>
-              <Badge variant={"outline"}>Softwares</Badge>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={"#"}>
-            <DropdownMenuItem>
-              <Badge variant={"outline"}>Technology</Badge>
-            </DropdownMenuItem>
-          </Link>
+          {categories.map((category, index) => (
+            <Link key={index} href={`/blog/${category}`}>
+              <DropdownMenuItem>
+                <Badge variant={"outline"}>{category}</Badge>
+              </DropdownMenuItem>
+            </Link>
+          ))}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -74,7 +74,7 @@ const CommentBox = ({
             </Button>
           </div>
         </div>
-      ) : use === "separate" && authUser ? (
+      ) : use === "separate" && authUser && !loading ? (
         <div className="flex flex-col gap-5">
           <div className="flex w-full gap-3 items-center">
             <Link href={`/profile/${authUser?.username}/blogs`} passHref>

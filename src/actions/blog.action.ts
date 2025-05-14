@@ -372,3 +372,81 @@ export const getBlogById = async (blogId: string) => {
     console.log("Error in getBlogById", error);
   }
 };
+
+// TODO:
+export const getBlogsByCategory = async (category: string) => {
+  try {
+    const blog = await prisma.blog.findMany({
+      where: {
+        categories: category,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            clerkId: true,
+            image: true,
+          },
+        },
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        saved: {
+          select: {
+            blogId: true,
+            userId: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+    return blog;
+  } catch (error) {
+    console.log("Error in getBlogByCategory", error);
+  }
+};
+
+export const getMostCommonCategories = async () => {
+  const result = await prisma.blog.groupBy({
+    take: 15,
+    by: ["categories"],
+
+    _count: {
+      categories: true,
+    },
+    orderBy: {
+      _count: {
+        categories: "desc",
+      },
+    },
+  });
+
+  return result.map((category) => category.categories);
+};

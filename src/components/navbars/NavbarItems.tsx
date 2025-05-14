@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "../ui/button";
 import { Bell, Edit } from "lucide-react";
 
@@ -8,14 +9,25 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import Dropdown from "../Dropdown";
+import Dropdown, { Categories } from "../Dropdown";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
+import { getMostCommonCategories } from "@/actions/blog.action";
+import { useEffect, useState } from "react";
 
 export const NavbarItems = ({ mobile }: { mobile?: boolean }) => {
+  const [categories, setCategories] = useState<Categories>([]);
+  // const categories = await getMostCommonCategories();
+  useEffect(() => {
+    const getCategories = async () => {
+      const res = await getMostCommonCategories();
+      setCategories(res);
+    };
+    getCategories();
+  }, []);
   return (
     <ul className={` gap-6 flex ${mobile && "flex-col"}`}>
-      <Dropdown />
+      <Dropdown categories={categories} />
       <Link href={"/write"} className="flex ">
         <Button
           size={"lg"}
