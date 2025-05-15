@@ -56,6 +56,7 @@ export const getAllBlogs = async () => {
                 name: true,
                 username: true,
                 image: true,
+                clerkId: true,
               },
             },
           },
@@ -503,5 +504,18 @@ export const getSearchedBlogs = async (value: string) => {
     return blogs;
   } catch (error) {
     console.log("error in getSearchedBlogs", error);
+  }
+};
+export const deleteComment = async (commentId: string) => {
+  try {
+    await prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+    });
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.log("Error in deleteComment", error);
   }
 };

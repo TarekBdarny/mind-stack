@@ -274,6 +274,7 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
                   {blog.comments.map((comment, index) => (
                     <Comment
                       key={index}
+                      commentId={comment.id}
                       commenter={comment.commenter}
                       content={comment.content}
                       createdAt={comment.createdAt}
