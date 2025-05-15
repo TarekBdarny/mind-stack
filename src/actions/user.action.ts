@@ -82,6 +82,7 @@ export const getUserByUsername = async (username: string) => {
   }
 };
 export const getUserByClerkId = async (clerkId: string) => {
+  if (!clerkId) return;
   return prisma.user.findUnique({
     where: {
       clerkId,

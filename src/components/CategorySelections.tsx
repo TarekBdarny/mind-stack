@@ -16,7 +16,7 @@ const CategorySelections = async () => {
               <Link href={`/blog/${category}`} className="">
                 <Badge
                   variant={"outline"}
-                  className="p-4 min-w-[100px] rounded-lg hover:bg-primary-foreground/80"
+                  className={`p-4 min-w-[100px] rounded-lg hover:bg-primary-foreground/80`}
                 >
                   {category}
                 </Badge>

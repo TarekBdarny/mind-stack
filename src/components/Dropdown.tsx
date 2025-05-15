@@ -13,8 +13,12 @@ import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { getMostCommonCategories } from "@/actions/blog.action";
 
+import { useUser } from "@clerk/nextjs";
+
 export type Categories = Awaited<ReturnType<typeof getMostCommonCategories>>;
 const Dropdown = ({ categories }: { categories: Categories }) => {
+  const { user } = useUser();
+  console.log(user);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

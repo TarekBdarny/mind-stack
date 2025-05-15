@@ -1,12 +1,11 @@
-import { Search } from "lucide-react";
 import Link from "next/link";
 import { currentUser } from "@clerk/nextjs/server";
 import { Separator } from "../ui/separator";
-import { Input } from "../ui/input";
 import { Poppins } from "next/font/google";
 import { NavbarItems } from "./NavbarItems";
 import MobileNavbar from "./MobileNavbar";
 import { registerUserToDB } from "@/actions/user.action";
+import SearchInput from "./SearchInput";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,18 +27,6 @@ const Navbar = async () => {
               Mind <p className="text-primary">Stack</p>
             </h1>
           </Link>
-        </div>
-        <div>
-          <div className="hidden sm:flex items-center relative  ">
-            <Input
-              className="w-[250px] lg:w-[400px] py-2 px-4 outline-none"
-              placeholder="Search For Anything"
-            />
-            <label htmlFor="search-input" className="absolute right-2">
-              <Search />
-              <span className="sr-only">Search</span>
-            </label>
-          </div>
         </div>
         <div className="hidden lg:block">
           <NavbarItems />

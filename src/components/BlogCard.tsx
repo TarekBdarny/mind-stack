@@ -326,7 +326,7 @@ export default BlogCard;
         </Link>
       </CardFooter> */
 }
-const ProtectedButton = ({
+export const ProtectedButton = ({
   children,
   user,
 }: {

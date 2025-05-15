@@ -15,6 +15,7 @@ const ProfilePageSidebar = ({ user }: UserProps) => {
       <p className="flex gap-2">
         <UserRound />@{user.username}
       </p>
+
       <div className="flex gap-2 items-center ">
         <Notebook />
         <p className="  ">{user?.bio || "No bio yet"}</p>

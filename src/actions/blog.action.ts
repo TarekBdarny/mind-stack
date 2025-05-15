@@ -450,3 +450,58 @@ export const getMostCommonCategories = async () => {
 
   return result.map((category) => category.categories);
 };
+export const getSearchedBlogs = async (value: string) => {
+  try {
+    if (value.trim() === "") return;
+    const blogs = await prisma.blog.findMany({
+      where: {
+        OR: [
+          {
+            content: {
+              contains: value,
+            },
+          },
+          {
+            title: {
+              contains: value,
+            },
+          },
+          {
+            categories: {
+              contains: value,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            clerkId: true,
+            image: true,
+          },
+        },
+        saved: {
+          select: {
+            blogId: true,
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+    return blogs;
+  } catch (error) {
+    console.log("error in getSearchedBlogs", error);
+  }
+};
