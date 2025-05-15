@@ -343,7 +343,7 @@ const SeparateBlog = ({
   } | null;
 }) => {
   return (
-    <section className="min-w-full max-w-3/4 mx-auto  sm:px-10">
+    <section className="min-w-full max-w-3/4 mx-auto px-4  sm:px-10">
       <div className="flex flex-col gap-4 lg:*:ml-20">
         <div className="flex gap-4">
           <Badge variant={"outline"} className=" w-24 p-2">
