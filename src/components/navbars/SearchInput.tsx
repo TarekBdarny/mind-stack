@@ -48,7 +48,7 @@ const SearchInput = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className=" flex cursor-pointer w-full sm:w-fit "
+          className=" flex cursor-pointer w-full lg:w-fit "
           variant={"outline"}
         >
           <div className="flex items-center gap-2 ">
