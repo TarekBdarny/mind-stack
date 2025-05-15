@@ -16,12 +16,12 @@ const Layout = async ({ children, params }: LayoutProps) => {
   if (!user) notFound();
 
   return (
-    <div className="max-w-3/4 mx-auto px-4">
+    <div className="w-full lg:max-w-3/4 mx-auto px-4">
       <ProfileUI user={user} />
       <div className="w-full flex items-center justify-center gap-10 mb-5">
         <ActiveLinks username={username} />
       </div>
-      <div className="flex flex-col lg:flex-row gap-3 px-4 sm:px-6">
+      <div className="flex flex-col lg:flex-row gap-3  sm:px-6">
         {/* SEP */}
         <ProfilePageSidebar user={user} />
         <div className="flex flex-col gap-4 w-full overflow-x-hidden ">

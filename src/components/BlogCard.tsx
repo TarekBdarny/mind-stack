@@ -113,7 +113,7 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
   if (use === "separate")
     return (
       <SeparateBlog blog={blog} user={user as { id: string } | null}>
-        <div className="flex items-center justify-between w-full lg:max-w-3/4">
+        <div className="flex items-center justify-between w-full  max-w-3/4">
           <div className="">
             <ProtectedButton user={user !== null}>
               <Button
@@ -165,7 +165,7 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
       </SeparateBlog>
     );
   return (
-    <Card className="w-full flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
+    <Card className=" flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
       <CardHeader className="px-2 sm:px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -341,7 +341,7 @@ const SeparateBlog = ({
   } | null;
 }) => {
   return (
-    <section className="max-w-3/4 mx-auto px-4 sm:px-10">
+    <section className="min-w-full max-w-3/4 mx-auto  sm:px-10">
       <div className="flex flex-col gap-4 lg:*:ml-20">
         <div className="flex gap-4">
           <Badge variant={"outline"} className=" w-24 p-2">

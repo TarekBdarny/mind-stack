@@ -15,7 +15,7 @@ const ProfileUI = async ({ user }: UserProps) => {
   const isOwnProfile = authUser?.id === user.id;
 
   return (
-    <section className="max-w-3/4 mx-auto px-4 mb-2  ">
+    <section className=" lg:max-w-3/4 mx-auto lg:px-4 mb-2  ">
       {/* USER IMAGE */}
       <div className="flex flex-col gap-20 xl:relative xl:h-[400px] ">
         <div className="relative">
@@ -28,7 +28,7 @@ const ProfileUI = async ({ user }: UserProps) => {
             height={100}
           />
           <Image
-            className="rounded-full border-2 border-background  absolute -bottom-20 left-1/2 -translate-x-1/2 sm:left-4 sm:-translate-x-0 hidden xl:block"
+            className="rounded-full border-2 border-background  absolute -bottom-20 left-43 -translate-x-1/2 sm:left-4 sm:-translate-x-0 hidden xl:block"
             src={user?.image || "default_image.png"}
             alt={user.username}
             width={150}
@@ -43,20 +43,22 @@ const ProfileUI = async ({ user }: UserProps) => {
           />
         </div>
         {/* USER DATA : USERNAME NAME ... */}
-        <div className=" flex flex-col lg:flex-row justify-between items-center px-2 sm:px-4 w-full lg:w-3/4 mx-auto py-4 xl:absolute xl:-bottom-20 mb-18 sm:left-[63%] xl:left-3/5 lg:left-[53%] xl:-translate-x-1/2  ">
+        <div className=" flex flex-col lg:flex-row justify-between items-center px-2 sm:px-4 w-full lg:w-3/4 mx-auto py-2 lg:py-4 xl:absolute xl:-bottom-20 mb-18 sm:left-[63%] xl:left-3/5 lg:left-[53%] xl:-translate-x-1/2  ">
           <div className="flex flex-col gap-2 justify-center items-center sm:items-start ">
-            <h1>{user.name}</h1>
+            <h1 className="">{user.name}</h1>
             <p>{user._count.blogs} Blogs</p>
           </div>
-          {!authUser ? (
-            <SignInButton mode="modal">
-              <Button>Follow</Button>
-            </SignInButton>
-          ) : isOwnProfile ? (
-            <UserDialog user={user} />
-          ) : (
-            <FollowButton targetId={user.id} following={following} />
-          )}
+          <div className="mt-3 lg:mt-0">
+            {!authUser ? (
+              <SignInButton mode="modal">
+                <Button variant={"outline"}>Follow</Button>
+              </SignInButton>
+            ) : isOwnProfile ? (
+              <UserDialog user={user} />
+            ) : (
+              <FollowButton targetId={user.id} following={following} />
+            )}
+          </div>
         </div>
       </div>
       <Separator />

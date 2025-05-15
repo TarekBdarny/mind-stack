@@ -32,7 +32,7 @@ const Comment = ({ commenter, content, createdAt }: CommentProps) => {
               </AvatarFallback>
             </Avatar>
           </Link>
-          <div className="flex space-x-2 items-center">
+          <div className="flex flex-col sm:flex-row space-x-2 items-center">
             <p className="font-medium">{commenter.name}</p>
             <span className="text-sm text-muted-foreground">
               @{commenter.username}
