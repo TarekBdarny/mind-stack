@@ -20,7 +20,7 @@ import { ProtectedButton } from "../BlogCard";
 
 type Props = {
   mobile?: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 };
 export const NavbarItems = ({ mobile, setOpen }: Props) => {
   const [categories, setCategories] = useState<Categories>([]);

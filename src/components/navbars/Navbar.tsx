@@ -5,7 +5,6 @@ import { Poppins } from "next/font/google";
 import { NavbarItems } from "./NavbarItems";
 import MobileNavbar from "./MobileNavbar";
 import { registerUserToDB } from "@/actions/user.action";
-import SearchInput from "./SearchInput";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,7 +16,7 @@ const Navbar = async () => {
 
   if (user) registerUserToDB();
   return (
-    <header className="max-w-7xl mx-auto px-4 py-4 sticky top-0 z-50 bg-background ">
+    <header className="max-w-3/4 mx-auto px-4 py-4 sticky top-0 z-50 bg-background ">
       <nav className="flex items-center justify-between w-full">
         <div className="flex gap-4">
           <Link href={"/"}>

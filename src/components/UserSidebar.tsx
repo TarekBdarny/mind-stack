@@ -35,13 +35,13 @@ const UserSidebar = async () => {
               <Separator className="my-4" />
               <div className="flex justify-between">
                 <div>
-                  <p className="font-medium"> 0</p>
+                  <p className="font-medium"> {user?._count.following}</p>
                   {/* {user?._count.following} */}
                   <p className="text-xs text-muted-foreground">Following</p>
                 </div>
                 <Separator orientation="vertical" />
                 <div>
-                  <p className="font-medium">0</p>
+                  <p className="font-medium">{user?._count.followers}</p>
                   {/* {user._count.followers} */}
                   <p className="text-xs text-muted-foreground">Followers</p>
                 </div>

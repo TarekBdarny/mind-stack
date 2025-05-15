@@ -8,7 +8,7 @@ const CategorySelections = async () => {
   const categories = await getMostCommonCategories();
 
   return (
-    <ScrollArea className="max-w-7xl py-3 mx-auto  whitespace-nowrap rounded-md ">
+    <ScrollArea className="max-w-3/4 py-3 mx-auto  whitespace-nowrap rounded-md ">
       <div className="px-4">
         <ul className="flex gap-4 lg:gap-5.5">
           {categories.map((category) => (

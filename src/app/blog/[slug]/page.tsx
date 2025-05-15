@@ -18,7 +18,7 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   } else {
     const blogs: Blogs = await getBlogsByCategory(slug);
     return (
-      <div className="max-w-7xl mx-auto px-4 flex flex-col gap-4">
+      <div className="max-w-3/4 mx-auto px-4 flex flex-col gap-4">
         <div className="items-start">
           <CategorySelections />
         </div>

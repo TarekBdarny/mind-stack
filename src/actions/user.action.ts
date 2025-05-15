@@ -47,6 +47,15 @@ export const getAuthUser = async () => {
       where: {
         clerkId: userId,
       },
+      include: {
+        _count: {
+          select: {
+            followers: true,
+            following: true,
+            blogs: true,
+          },
+        },
+      },
     });
     if (!authUser) return;
     return authUser;
@@ -132,5 +141,157 @@ export const updateUser = async (data: userData) => {
   } catch (error) {
     console.log("error in updateUser", error);
     throw new Error("Error updating user");
+  }
+};
+export const getRandomUsers = async () => {
+  try {
+    const userId = await getDbUserId();
+    if (!userId) return [];
+    const users = await prisma.user.findMany({
+      where: {
+        AND: [
+          { NOT: { id: userId } },
+          {
+            NOT: {
+              followers: { some: { followerId: userId } },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        image: true,
+        _count: {
+          select: {
+            followers: true,
+          },
+        },
+      },
+      take: 3,
+    });
+    return users;
+  } catch (error) {
+    console.log("error in getRandomUsers", error);
+  }
+};
+export const toggleFollow = async (targetId: string) => {
+  try {
+    const userId = await getDbUserId();
+
+    if (!userId) return;
+
+    const existingFollow = await prisma.follows.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: userId,
+          followingId: targetId,
+        },
+      },
+    });
+    if (existingFollow) {
+      // unfollow
+      await prisma.follows.delete({
+        where: {
+          followerId_followingId: {
+            followerId: userId,
+            followingId: targetId,
+          },
+        },
+      });
+    } else {
+      // follow
+      await prisma.follows.create({
+        data: {
+          followerId: userId,
+          followingId: targetId,
+        },
+      });
+    }
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.log("error in toggleFollow", error);
+  }
+};
+export async function isFollowing(userId: string) {
+  try {
+    const currentUserId = await getDbUserId();
+    if (!currentUserId) return false;
+
+    const follow = await prisma.follows.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: currentUserId,
+          followingId: userId,
+        },
+      },
+    });
+
+    return !!follow;
+  } catch (error) {
+    console.error("Error checking follow status:", error);
+    return false;
+  }
+}
+export const getFollowing = async (userId: string) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        followers: {
+          some: {
+            followerId: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        image: true,
+        _count: {
+          select: {
+            followers: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return users;
+  } catch (error) {
+    console.log("error in getFollowing", error);
+  }
+};
+export const getFollowers = async (userId: string) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        following: {
+          some: {
+            followingId: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        image: true,
+        _count: {
+          select: {
+            followers: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return users;
+  } catch (error) {
+    console.log("error in getFollowers", error);
   }
 };
