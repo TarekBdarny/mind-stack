@@ -18,17 +18,17 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import {
-  getAuthUser,
   getDbUserId,
   getFollowers,
   getFollowing,
+  getUserByUsername,
   isFollowing,
 } from "@/actions/user.action";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import FollowButton from "./FollowButton";
 import Link from "next/link";
 
-type User = Awaited<ReturnType<typeof getAuthUser>>;
+type User = Awaited<ReturnType<typeof getUserByUsername>>;
 type Array = Awaited<ReturnType<typeof getFollowers>>;
 type Follower = {
   id: string;
@@ -120,7 +120,7 @@ const FollowingFollowersDialog = ({
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="cursor-pointer hover:underline">
+        <div className="cursor-pointer">
           {use === "following" ? (
             <p className="flex items-center gap-2">
               <Users />

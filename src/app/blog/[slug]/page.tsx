@@ -13,6 +13,8 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const dbUserId = await getDbUserId();
   if (containsBothNumbersAndLetters(slug)) {
     const blog = await getBlogById(slug);
+    if (!blog) return;
+
     return <BlogCard blog={blog} dbUserId={dbUserId} use="separate" />;
     // Handle id route
   } else {

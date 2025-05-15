@@ -14,13 +14,7 @@ import { formatRelativeTime, getFormattedBlogDate } from "@/lib/date"; // Change
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import DeleteButton from "./DeleteButton";
-import {
-  Bookmark,
-  Edit,
-  Heart,
-  MessageCircleCodeIcon,
-  MoreHorizontal,
-} from "lucide-react";
+import { Bookmark, Edit, Heart, MessageCircleCodeIcon } from "lucide-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import CommentBox from "./Comments/CommentBox";
 import { toast } from "sonner";
@@ -29,6 +23,7 @@ import { Badge } from "./ui/badge";
 
 import Comment from "./Comments/Comment";
 import CommentsSheet from "./Comments/CommentsSheet";
+import FollowButton from "./FollowButton";
 
 type Blogs = Awaited<ReturnType<typeof getAllBlogs>>;
 export type Blog = Blogs[number];
@@ -117,8 +112,8 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
   };
   if (use === "separate")
     return (
-      <SeparateBlog blog={blog}>
-        <div className="flex items-center justify-between max-w-3/4">
+      <SeparateBlog blog={blog} user={user as { id: string } | null}>
+        <div className="flex items-center justify-between w-full lg:max-w-3/4">
           <div className="">
             <ProtectedButton user={user !== null}>
               <Button
@@ -154,12 +149,6 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
                 {isSaved ? <Bookmark className="fill-primary" /> : <Bookmark />}
               </Button>
             </ProtectedButton>
-          </div>
-          <div>
-            <Button variant={"ghost"} className="cursor-pointer">
-              <MoreHorizontal />
-              <span className="sr-only">More options</span>
-            </Button>
           </div>
         </div>
 
@@ -343,13 +332,17 @@ export const ProtectedButton = ({
 const SeparateBlog = ({
   blog,
   children,
+  user,
 }: {
   blog: Blog;
   children: React.ReactNode;
+  user: {
+    id: string;
+  } | null;
 }) => {
   return (
     <section className="max-w-3/4 mx-auto px-4 sm:px-10">
-      <div className="flex flex-col gap-4 sm:*:ml-20">
+      <div className="flex flex-col gap-4 lg:*:ml-20">
         <div className="flex gap-4">
           <Badge variant={"outline"} className=" w-24 p-2">
             {blog?.categories}
@@ -372,13 +365,16 @@ const SeparateBlog = ({
             <Link href={`/profile/${blog?.author.username}/blogs`}>
               <p className="hover:underline">{blog?.author.name}</p>
             </Link>
-            <Button
-              className="cursor-pointer rounded-full"
-              variant={"outline"}
-              size={"lg"}
-            >
-              Follow
-            </Button>
+            {user?.id === blog?.author.clerkId ? (
+              <Badge
+                variant={"outline"}
+                className="text-muted-foreground px-4 py-2"
+              >
+                You
+              </Badge>
+            ) : (
+              <FollowButton targetId={blog?.author.id} />
+            )}
             <p className="text-muted-foreground">
               {getFormattedBlogDate(blog?.createdAt)}
             </p>

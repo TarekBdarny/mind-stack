@@ -14,15 +14,15 @@ import Dropdown, { Categories } from "../Dropdown";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
 import { getMostCommonCategories } from "@/actions/blog.action";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchInput from "./SearchInput";
 import { ProtectedButton } from "../BlogCard";
 
 type Props = {
   mobile?: boolean;
-  setOpen?: Dispatch<SetStateAction<boolean>>;
+  // setOpen: Dispatch<SetStateAction<boolean>>;
 };
-export const NavbarItems = ({ mobile, setOpen }: Props) => {
+export const NavbarItems = ({ mobile }: Props) => {
   const [categories, setCategories] = useState<Categories>([]);
   const { user } = useUser();
   // const categories = await getMostCommonCategories();
@@ -33,14 +33,11 @@ export const NavbarItems = ({ mobile, setOpen }: Props) => {
     };
     getCategories();
   }, []);
+  // if (!mobile && !setOpen) return;
   return (
     <ul className={` gap-4 flex ${mobile && "flex-col"}`}>
       <ProtectedButton user={user !== null}>
-        <Link
-          href={`${user === null ? "/" : "/write"}`}
-          className="flex "
-          onClick={() => setOpen((prev) => !prev)}
-        >
+        <Link href={`${user === null ? "/" : "/write"}`} className="flex ">
           <Button
             size={"lg"}
             variant={"outline"}
@@ -51,7 +48,7 @@ export const NavbarItems = ({ mobile, setOpen }: Props) => {
           </Button>
         </Link>
       </ProtectedButton>
-      <Dropdown categories={categories} setOpen={setOpen} />
+      <Dropdown categories={categories} />
 
       <div className="">
         <SearchInput />

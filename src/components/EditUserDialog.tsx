@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { updateUser } from "@/actions/user.action";
+import { getUserByUsername, updateUser } from "@/actions/user.action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,11 +15,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // import {  useUser } from "@clerk/nextjs";
-import { User } from "@prisma/client";
 import { Pen } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+type User = Awaited<ReturnType<typeof getUserByUsername>>;
 export function UserDialog({ user }: { user: User }) {
   // const { user: currentUser } = useUser();
   const [userData, setUserData] = useState({

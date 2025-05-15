@@ -10,22 +10,17 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"; // Ensure this path is correct after 'npx shadcn-ui add pagination'
 import WhoToFollow from "@/components/WhoToFollow";
+import { PageProps } from "../../../.next/types/app/(root)/layout";
 
 const ITEMS_PER_PAGE = 5;
-
-// This is a placeholder; the actual implementation might differ.
-// type Blog = Awaited<ReturnType<typeof getAllBlogs>> extends (infer U)[]
-//   ? U
-//   : never; // Extract Blog type
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({
   searchParams: initialSearchParams, // Renamed prop
-}: {
+}: PageProps & {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  // Speculatively "await" the searchParams prop
   const searchParams = await Promise.resolve(initialSearchParams);
   const dbUserId = await getDbUserId();
   // Simplified currentPage derivation for diagnostics
@@ -37,9 +32,6 @@ export default async function Home({
     }
   }
 
-  // TODO: Modify getAllBlogs to support pagination
-  // For now, we'll fetch all and manually paginate to build the UI.
-  // This is NOT performant and should be replaced with true backend pagination.
   const allBlogs = await getAllBlogs();
   const totalCount = allBlogs.length;
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);

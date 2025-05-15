@@ -14,15 +14,15 @@ import { Badge } from "./ui/badge";
 import { getMostCommonCategories } from "@/actions/blog.action";
 
 import { useUser } from "@clerk/nextjs";
-import { Dispatch, SetStateAction } from "react";
+// import { Dispatch, SetStateAction } from "react";
 
 export type Categories = Awaited<ReturnType<typeof getMostCommonCategories>>;
 const Dropdown = ({
   categories,
-  setOpen,
-}: {
+}: // setOpen,
+{
   categories: Categories;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  // setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { user } = useUser();
   console.log(user);
@@ -39,11 +39,7 @@ const Dropdown = ({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {categories.map((category, index) => (
-            <Link
-              key={index}
-              href={`/blog/${category}`}
-              onClick={() => setOpen((prev) => !prev)}
-            >
+            <Link key={index} href={`/blog/${category}`}>
               <DropdownMenuItem>
                 <Badge variant={"outline"}>{category}</Badge>
               </DropdownMenuItem>

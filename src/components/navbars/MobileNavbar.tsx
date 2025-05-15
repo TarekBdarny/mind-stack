@@ -37,7 +37,7 @@ const MobileNavbar = () => {
     getUser();
   }, []);
 
-  if (!mounted || !isTabletOrMobile) return null;
+  if (!mounted || !isTabletOrMobile || !user) return null;
   return (
     isTabletOrMobile && (
       <Sheet open={open} onOpenChange={setOpen}>
@@ -54,7 +54,7 @@ const MobileNavbar = () => {
             </SheetTitle>
           </SheetHeader>
           <div className="grid gap-4 p-4">
-            <NavbarItems mobile={true} setOpen={setOpen} />
+            <NavbarItems mobile={true} />
           </div>
           {/* IMPLEMENT FOOTER THAT SHOWS USER PROFILE IMAGE AND DROPDOWN */}
           <SheetFooter>

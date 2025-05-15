@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { toggleFollow } from "@/actions/user.action";
 import { toast } from "sonner";
-import { dateFormat } from "@/lib/date";
 
 type Props = {
   targetId: string;

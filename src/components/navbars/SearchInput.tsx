@@ -41,9 +41,6 @@ const SearchInput = () => {
     fetchBlogs();
   }, [inputValue]);
 
-  useEffect(() => {
-    console.log(blogs);
-  }, [blogs]);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -108,8 +105,30 @@ const SearchInput = () => {
 
 export default SearchInput;
 
-type Blog = Blogs[number];
+export type Blog = {
+  id: string;
+  title: string;
+  content: string | null; // Update this line
+  categories: string;
+  createdAt: Date;
+  author: {
+    name: string | null;
+    image: string | null;
+    id: string;
+    clerkId: string;
+    username: string;
+  };
+  saved: {
+    userId: string;
+    blogId: string;
+  }[];
+  _count: {
+    likes: number;
+    comments: number;
+  };
+};
 const SearchBlog = ({ blog }: { blog: Blog }) => {
+  if (!blog.content) return;
   return (
     <div className="flex flex-col gap-4 w-full ">
       <div>
