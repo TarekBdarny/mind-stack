@@ -17,9 +17,22 @@ import { useEffect, useState } from "react";
 import { getAuthUser } from "@/actions/user.action";
 
 export type User = Awaited<ReturnType<typeof getAuthUser>>;
+type TestUser = {
+  _count: { blogs: number; followers: number; following: number };
+  name: string | null;
+  id: string;
+  email: string;
+  username: string;
+  clerkId: string;
+  bio: string | null;
+  image: string | null;
+  location: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
 const MobileNavbar = () => {
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<TestUser>();
   const [open, setOpen] = useState(false);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1023px)" });
@@ -37,7 +50,7 @@ const MobileNavbar = () => {
     getUser();
   }, []);
 
-  if (!mounted || !isTabletOrMobile || !user) return null;
+  if (!mounted || !isTabletOrMobile) return null;
   return (
     isTabletOrMobile && (
       <Sheet open={open} onOpenChange={setOpen}>

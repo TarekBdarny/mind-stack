@@ -165,7 +165,7 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
       </SeparateBlog>
     );
   return (
-    <Card className=" flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background">
+    <Card className=" flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-background w-[100%] ">
       <CardHeader className="px-2 sm:px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -204,9 +204,11 @@ const BlogCard = ({ blog, dbUserId, use }: BlogProps) => {
           )}
         </div>
       </CardHeader>
-      <CardContent className="px-4 sm:px-6">
+      <CardContent className="px-4 sm:px-6 ">
         <Link href={blogLink} passHref>
-          <h1 className="mb-5 line-clamp-1 break-words">{blog.title}</h1>
+          <h1 className="mb-5 line-clamp-3 sm:line-clamp-2 break-words">
+            {blog.title}
+          </h1>
         </Link>
         <div
           className="prose dark:prose-invert line-clamp-3 "
@@ -365,16 +367,21 @@ const SeparateBlog = ({
             <Link href={`/profile/${blog?.author.username}/blogs`}>
               <p className="hover:underline">{blog?.author.name}</p>
             </Link>
-            {user?.id === blog?.author.clerkId ? (
+            {!user ? (
+              <SignInButton mode="modal">
+                <Button variant={"outline"}>Follow</Button>
+              </SignInButton>
+            ) : user.id !== blog?.author.id ? (
+              <FollowButton targetId={user.id} />
+            ) : (
               <Badge
                 variant={"outline"}
                 className="text-muted-foreground px-4 py-2"
               >
                 You
               </Badge>
-            ) : (
-              <FollowButton targetId={blog?.author.id} />
             )}
+
             <p className="text-muted-foreground">
               {getFormattedBlogDate(blog?.createdAt)}
             </p>

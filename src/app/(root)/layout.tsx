@@ -13,7 +13,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <UserSidebar />
           </div>
 
-          <div className="w-[400px] pr-4 lg:pr-0 lg:w-full  lg:col-span-9 ">
+          <div className="w-[400px] sm:w-[700px] md:w-[900px] pr-4 lg:pr-0 lg:w-full  lg:col-span-9 ">
             {children}
           </div>
         </div>
