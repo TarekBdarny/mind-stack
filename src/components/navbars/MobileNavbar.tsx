@@ -20,6 +20,8 @@ export type User = Awaited<ReturnType<typeof getAuthUser>>;
 const MobileNavbar = () => {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [open, setOpen] = useState(false);
+
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const MobileNavbar = () => {
   if (!mounted || !isTabletOrMobile) return null;
   return (
     isTabletOrMobile && (
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline">
             <span className="sr-only">Open menu</span>
@@ -47,10 +49,12 @@ const MobileNavbar = () => {
         </SheetTrigger>
         <SheetContent className="w-[350px]">
           <SheetHeader>
-            <SheetTitle>Mind Stack</SheetTitle>
+            <SheetTitle>
+              Mind <span className="text-primary">Stack</span>
+            </SheetTitle>
           </SheetHeader>
           <div className="grid gap-4 p-4">
-            <NavbarItems mobile={true} />
+            <NavbarItems mobile={true} setOpen={setOpen} />
           </div>
           {/* IMPLEMENT FOOTER THAT SHOWS USER PROFILE IMAGE AND DROPDOWN */}
           <SheetFooter>
@@ -65,7 +69,7 @@ const MobileNavbar = () => {
               </div>
             </SignedOut>
             <SignedIn>
-              <MobileNavbarDropdown user={user} />
+              <MobileNavbarDropdown user={user} setOpen={setOpen} />
             </SignedIn>
           </SheetFooter>
         </SheetContent>

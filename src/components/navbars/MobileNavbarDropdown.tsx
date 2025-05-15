@@ -1,10 +1,12 @@
+"use client";
 import {
-  Bell,
   ChevronsUpDown,
-  CreditCard,
+  CircleUser,
+  FolderClosed,
+  Heart,
   LogOut,
-  Settings,
   Sparkles,
+  Star,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,8 +22,16 @@ import UserAvatar from "../UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 import { SignOutButton } from "@clerk/nextjs";
 import { User } from "./MobileNavbar";
+import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
-const MobileNavbarDropdown = ({ user }: { user: User }) => {
+const MobileNavbarDropdown = ({
+  user,
+  setOpen,
+}: {
+  user: User;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -44,24 +54,48 @@ const MobileNavbarDropdown = ({ user }: { user: User }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <DropdownMenuItem>
-            <Sparkles />
-            <span>Upgrade to Hero</span>
-          </DropdownMenuItem>
+          <Sparkles />
+          <span>Upgrade to Hero</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Settings />
-          <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CreditCard />
-          <span>Billing</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Bell />
-          Notifications
-        </DropdownMenuItem>
+        <Link
+          href={`/profile/${user?.username}`}
+          onClick={() => setOpen(false)}
+        >
+          <DropdownMenuItem>
+            <CircleUser />
+            Profile
+          </DropdownMenuItem>
+        </Link>
+        <Link
+          href={`/profile/${user?.username}/blogs`}
+          onClick={() => setOpen(false)}
+        >
+          <DropdownMenuItem>
+            <FolderClosed />
+            <span>My Blogs</span>
+          </DropdownMenuItem>
+        </Link>
+        <Link
+          href={`/profile/${user?.username}/liked`}
+          onClick={() => setOpen(false)}
+        >
+          <DropdownMenuItem>
+            <Heart className="fill-destructive" />
+            Liked
+          </DropdownMenuItem>
+        </Link>
+
+        <Link
+          href={`/profile/${user?.username}/saved`}
+          onClick={() => setOpen(false)}
+        >
+          <DropdownMenuItem>
+            <Star />
+            Saved
+          </DropdownMenuItem>
+        </Link>
+
         <DropdownMenuItem>
           <ThemeToggle />
         </DropdownMenuItem>

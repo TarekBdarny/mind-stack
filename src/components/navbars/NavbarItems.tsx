@@ -14,11 +14,15 @@ import Dropdown, { Categories } from "../Dropdown";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
 import { getMostCommonCategories } from "@/actions/blog.action";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import SearchInput from "./SearchInput";
 import { ProtectedButton } from "../BlogCard";
 
-export const NavbarItems = ({ mobile }: { mobile?: boolean }) => {
+type Props = {
+  mobile?: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};
+export const NavbarItems = ({ mobile, setOpen }: Props) => {
   const [categories, setCategories] = useState<Categories>([]);
   const { user } = useUser();
   // const categories = await getMostCommonCategories();
@@ -30,10 +34,13 @@ export const NavbarItems = ({ mobile }: { mobile?: boolean }) => {
     getCategories();
   }, []);
   return (
-    <ul className={` gap-6 flex ${mobile && "flex-col"}`}>
-      <Dropdown categories={categories} />
+    <ul className={` gap-4 flex ${mobile && "flex-col"}`}>
       <ProtectedButton user={user !== null}>
-        <Link href={`${user === null ? "/" : "/write"}`} className="flex ">
+        <Link
+          href={`${user === null ? "/" : "/write"}`}
+          className="flex "
+          onClick={() => setOpen((prev) => !prev)}
+        >
           <Button
             size={"lg"}
             variant={"outline"}
@@ -44,6 +51,7 @@ export const NavbarItems = ({ mobile }: { mobile?: boolean }) => {
           </Button>
         </Link>
       </ProtectedButton>
+      <Dropdown categories={categories} setOpen={setOpen} />
 
       <div className="">
         <SearchInput />

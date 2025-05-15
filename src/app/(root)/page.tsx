@@ -82,7 +82,12 @@ export default async function Home({
         <div className="grid grid-cols-1  sm:grid-cols-1 gap-6 mb-8">
           {/* Changed lg:grid-cols-1 to display one card per row for a cleaner look with new card design */}
           {paginatedBlogs.map((blog) => (
-            <BlogCard key={blog.id} blog={blog} dbUserId={dbUserId} />
+            <BlogCard
+              key={blog.id}
+              blog={blog}
+              dbUserId={dbUserId}
+              use="group"
+            />
           ))}
         </div>
       )}

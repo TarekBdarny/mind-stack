@@ -1,14 +1,14 @@
 "use client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { LogIn, Send } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
 import { getAuthUser } from "@/actions/user.action";
-import { Skeleton } from "./ui/skeleton";
-import { Textarea } from "./ui/textarea";
+import { Skeleton } from "../ui/skeleton";
+import { Textarea } from "../ui/textarea";
 
 type User = Awaited<ReturnType<typeof getAuthUser>>;
 
@@ -41,6 +41,7 @@ const CommentBox = ({
     getUser();
   }, []);
   if (loading) return <CommentBoxSkeleton />;
+
   return (
     <>
       {use === "group" && authUser && !loading ? (
@@ -74,7 +75,7 @@ const CommentBox = ({
             </Button>
           </div>
         </div>
-      ) : use === "separate" && authUser && !loading ? (
+      ) : use === "separate" && authUser ? (
         <div className="flex flex-col gap-5">
           <div className="flex w-full gap-3 items-center">
             <Link href={`/profile/${authUser?.username}/blogs`} passHref>

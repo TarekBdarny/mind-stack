@@ -47,7 +47,10 @@ const SearchInput = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className=" flex cursor-pointer " variant={"outline"}>
+        <Button
+          className=" flex cursor-pointer w-full sm:w-fit "
+          variant={"outline"}
+        >
           <div className="flex items-center gap-2 ">
             <Search />
             Search Blogs
@@ -141,19 +144,6 @@ const SearchBlog = ({ blog }: { blog: Blog }) => {
           </Badge>
         </div>
         <Separator className="my-5" />
-        {/* <div className="flex items-center gap-4">
-          <Button className="">
-            {blog._count.likes}
-            <Heart />
-          </Button>
-          <Button className="">
-            {blog._count.comments}
-            <MessageCircle />
-          </Button>
-          <Button className="">
-            <Bookmark />
-          </Button>
-        </div> */}
       </div>
     </div>
   );

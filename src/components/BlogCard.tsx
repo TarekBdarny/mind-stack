@@ -22,13 +22,13 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import CommentBox from "./CommentBox";
+import CommentBox from "./Comments/CommentBox";
 import { toast } from "sonner";
 import { ScrollArea } from "./ui/scroll-area";
 import { Badge } from "./ui/badge";
 
-import Comment from "./Comment";
-import CommentsSheet from "./CommentsSheet";
+import Comment from "./Comments/Comment";
+import CommentsSheet from "./Comments/CommentsSheet";
 
 type Blogs = Awaited<ReturnType<typeof getAllBlogs>>;
 export type Blog = Blogs[number];

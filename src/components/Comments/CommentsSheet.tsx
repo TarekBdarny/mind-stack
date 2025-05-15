@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 import Comment from "./Comment";
 import CommentBox from "./CommentBox";
-import { ScrollArea } from "./ui/scroll-area";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
-import { Blog } from "./BlogCard";
-import { Separator } from "./ui/separator";
+import { ScrollArea } from "../ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
+import { Blog } from "../BlogCard";
+import { Separator } from "../ui/separator";
 
 type SheetProps = {
   showComments: boolean;

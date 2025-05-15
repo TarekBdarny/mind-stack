@@ -1,8 +1,8 @@
 "use client";
-import { getAuthUser } from "@/actions/user.action";
+
 import React from "react";
-import { Separator } from "./ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Separator } from "../ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { formatRelativeTime } from "@/lib/date";
 type User = {

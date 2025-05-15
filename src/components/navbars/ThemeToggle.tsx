@@ -21,7 +21,7 @@ export function ThemeToggle() {
   if (!mounted) return null;
   return isTabletOrMobile ? (
     <button
-      className="my-1.5"
+      className=""
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       <div className={`flex  w-[320px] gap-6 `}>
