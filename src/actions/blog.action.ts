@@ -340,6 +340,7 @@ export const getBlogById = async (blogId: string) => {
                 id: true,
                 name: true,
                 username: true,
+                clerkId: true,
                 image: true,
               },
             },

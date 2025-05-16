@@ -13,9 +13,6 @@ import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { getMostCommonCategories } from "@/actions/blog.action";
 
-import { useUser } from "@clerk/nextjs";
-// import { Dispatch, SetStateAction } from "react";
-
 export type Categories = Awaited<ReturnType<typeof getMostCommonCategories>>;
 const Dropdown = ({
   categories,
@@ -24,8 +21,6 @@ const Dropdown = ({
   categories: Categories;
   // setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { user } = useUser();
-  console.log(user);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

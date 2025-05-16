@@ -16,7 +16,6 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
     if (!blog) return;
 
     return <BlogCard blog={blog} dbUserId={dbUserId} use="separate" />;
-    // Handle id route
   } else {
     const blogs: Blogs = await getBlogsByCategory(slug);
     return (

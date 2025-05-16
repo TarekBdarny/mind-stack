@@ -51,12 +51,12 @@ const ProfilePageSidebar = async ({ user }: UserProps) => {
       <p className="flex gap-2">
         <UserRound />@{user.username}
       </p>
-      <FollowingFollowersDialog array={followers} user={user} use="following" />
       <FollowingFollowersDialog
         array={followings}
         user={user}
-        use="followers"
+        use="following"
       />
+      <FollowingFollowersDialog array={followers} user={user} use="followers" />
       <div className="flex gap-2 items-center ">
         <Notebook />
         <p className="  ">{user?.bio || "No bio yet"}</p>
